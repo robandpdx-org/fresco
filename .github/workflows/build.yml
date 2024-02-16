@@ -9,6 +9,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r25c
     - name: Install JDK
       uses: actions/setup-java@v4
       with:
