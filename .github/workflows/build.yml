@@ -1,0 +1,34 @@
+name: facebook/fresco/build
+on:
+  push:
+    branches:
+    - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+#     # This item has no matching transformer
+#     - circleci_android_accept_licenses:
+#     # This item has no matching transformer
+#     - circleci_android_create_avd:
+#     # This item has no matching transformer
+#     - circleci_android_start_emulator:
+#     # This item has no matching transformer
+#     - circleci_android_wait_for_emulator:
+    - name: Run Tests
+      run: |
+        ./gradlew test assembleDebug -PdisablePreDex
+    - name: Copy Results
+      run: |
+        mkdir -p /home/circleci/test-results/junit
+        find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} /home/circleci/test-results/junit \;
+    - uses: actions/upload-artifact@v4.0.0
+      with:
+        path: "/home/circleci/test-results"
