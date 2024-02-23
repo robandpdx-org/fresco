@@ -8,6 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - uses: gradle/actions/setup-gradle@v3
+    - uses: actions/cache@v4
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd-${{ matrix.api-level }}
     - uses: nttld/setup-ndk@v1
       with:
         ndk-version: r25c
@@ -27,17 +35,6 @@ jobs:
       with:
         api-level: 29
         script: ./gradlew test assembleDebug -PdisablePreDex
-#     # This item has no matching transformer
-#     - circleci_android_accept_licenses:
-#     # This item has no matching transformer
-#     - circleci_android_create_avd:
-#     # This item has no matching transformer
-#     - circleci_android_start_emulator:
-#     # This item has no matching transformer
-#     - circleci_android_wait_for_emulator:
-#    - name: Run Tests
-#      run: |
-#        ./gradlew test assembleDebug -PdisablePreDex
     - name: Copy Results
       run: |
         mkdir -p /home/circleci/test-results/junit
