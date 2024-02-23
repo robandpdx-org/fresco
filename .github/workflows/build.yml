@@ -25,6 +25,7 @@ jobs:
     - name: Run Tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
+        api-level: 29
         script: ./gradlew test assembleDebug -PdisablePreDex
 #     # This item has no matching transformer
 #     - circleci_android_accept_licenses:
