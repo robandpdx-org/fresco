@@ -17,6 +17,15 @@ jobs:
         java-version: '18'
         distribution: 'temurin'
         cache: gradle
+    - name: Enable KVM
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    - name: Run Tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        script: ./gradlew test assembleDebug -PdisablePreDex
 #     # This item has no matching transformer
 #     - circleci_android_accept_licenses:
 #     # This item has no matching transformer
@@ -25,9 +34,9 @@ jobs:
 #     - circleci_android_start_emulator:
 #     # This item has no matching transformer
 #     - circleci_android_wait_for_emulator:
-    - name: Run Tests
-      run: |
-        ./gradlew test assembleDebug -PdisablePreDex
+#    - name: Run Tests
+#      run: |
+#        ./gradlew test assembleDebug -PdisablePreDex
     - name: Copy Results
       run: |
         mkdir -p /home/circleci/test-results/junit
